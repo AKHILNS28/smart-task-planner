@@ -1,0 +1,23 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+input {
+  margin: 5px;
+  padding: 8px;
+}
+
+button {
+  padding: 8px 12px;
+}
+
+#weather {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+ul {
+  list-style-type: square;
+}

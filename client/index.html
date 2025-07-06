@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Task Planner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Smart Task Planner with Weather</h1>
+
+  <div>
+    <input id="taskInput" placeholder="Enter task" />
+    <input id="cityInput" placeholder="Enter your city" />
+    <button onclick="addTask()">Add Task</button>
+  </div>
+
+  <div id="weather"></div>
+  <h2>Tasks</h2>
+  <ul id="taskList"></ul>
+
+  <script>
+    function addTask() {
+      const task = document.getElementById("taskInput").value;
+      const city = document.getElementById("cityInput").value;
+
+      if (!task || !city) {
+        alert("Please enter both task and city.");
+        return;
+      }
+
+      // Save task to server
+      fetch("http://localhost:5000/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ task: task, city: city })
+      }).then(() => {
+        loadTasks();
+        getWeather(city);
+      });
+    }
+
+    function loadTasks() {
+      fetch("http://localhost:5000/tasks")
+        .then(res => res.json())
+        .then(tasks => {
+          const list = document.getElementById("taskList");
+          list.innerHTML = "";
+          tasks.forEach(t => {
+            const li = document.createElement("li");
+            li.textContent = `${t.task} (${t.city})`;
+            list.appendChild(li);
+          });
+        });
+    }
+
+    function getWeather(city) {
+      fetch(`http://localhost:5000/weather?city=${city}`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("weather").innerText =
+            `Weather in ${city}: ${data.description}, ${data.temperature}°C`;
+        });
+    }
+
+    // Initial load
+    loadTasks();
+  </script>
+</body>
+</html>
